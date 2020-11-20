@@ -1,0 +1,46 @@
+var express = require('express');
+var app = express();
+var mongoose = require("mongoose");
+var morgan = require('morgan');
+var port = process.env.port || 4000;
+var bodyParser = require('body-parser');
+var DBConnectionString = "mongodb+srv://quochuy1204:Cuhuy1204@shoestore.qxbs4.mongodb.net/shoesstore?retryWrites=true&w=majority";
+
+
+//Khai báo route cho products
+var productRoute = require('./routes/product.route');
+
+//Cấu hình cho ứng dụng
+//Dùng body-parse để giúp chúng ta lấy thông tin từ 1 cái POST request
+//Dùng body-parser để phân tích dữ liệu trong body được gửi kèm theo request
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+//Cấu hình để kết nối với MongoDB
+mongoose.set('useCreateIndex', true);
+mongoose.connect(DBConnectionString, { useNewUrlParser: true })
+    .then(() => {
+        console.log("Successfully connected to the Database.");
+    })
+    .catch(err => {
+        console.log("Could not connect to the Database. Exiting now ....", err);
+        process.exit();
+    });
+
+//Cấu hình cho ứng dụng để xử lý CORS - 1 dạng MiddleWare
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET', 'POST');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+    next();
+});
+
+//Sử dụng morgan để báo mọi truy cập và yêu cầu về console
+app.use(morgan('dev'));
+
+//khai báo productRoute 
+app.use('/product', productRoute);
+
+//Khởi động server
+app.listen(port);
+console.log('The PORT is : ' + port);
