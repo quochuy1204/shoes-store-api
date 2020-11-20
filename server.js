@@ -2,9 +2,11 @@ var express = require('express');
 var app = express();
 var mongoose = require("mongoose");
 var morgan = require('morgan');
-var port = process.env.port || 4000;
 var bodyParser = require('body-parser');
 var DBConnectionString = "mongodb+srv://quochuy1204:Cuhuy1204@shoestore.qxbs4.mongodb.net/shoesstore?retryWrites=true&w=majority";
+
+var server_port = process.env.YOUR_PORT || process.env.PORT || 4000;
+var server_host = process.env.YOUR_HOST || '0.0.0.0';
 
 
 //Khai báo route cho products
@@ -42,5 +44,6 @@ app.use(morgan('dev'));
 app.use('/product', productRoute);
 
 //Khởi động server
-app.listen(port);
-console.log('The PORT is : ' + port);
+app.listen(server_port, server_host, function () {
+    console.log('Listening on port %d', server_port);
+});
