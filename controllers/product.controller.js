@@ -48,7 +48,7 @@ exports.updateProduct = function (req, res) {
             return res.send(err);
         }
         else {
-            res.send("Product updated.");
+            res.json("Product updated.");
         }
     });
 };
